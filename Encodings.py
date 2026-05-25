@@ -13,7 +13,7 @@ import numpy as np
 @return: A tuple containing the time array and the encoded signal array
 """
 def AMI(signal, Tb=1):
-    t = np.arange(0, (len(signal))*Tb, Tb)
+    t = np.arange(0, len(signal)*Tb, Tb)
     encoded_signal = np.zeros_like(t)
     polarity = -1
     for i in range(len(signal)):
@@ -31,7 +31,7 @@ def AMI(signal, Tb=1):
 @return: A tuple containing the time array and the encoded signal array
 """
 def CMI(signal, Tb=1):
-    t = np.arange(0, (len(signal))*Tb, Tb/2)
+    t = np.arange(0, len(signal)*Tb, Tb/2)
     encoded_signal = np.zeros_like(t)
     polarity = -1
     for i in 2*np.array(range(len(signal))):
