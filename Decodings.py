@@ -41,3 +41,25 @@ def CMI(data, Tb=1):
         
         decoded_signal[i] = bit
     return [t, decoded_signal]
+
+
+"""
+@brief: Manchester dencoding for a binary signal (IEEE 802.3 Standard)
+@param signal: The binary signal to be encoded (array of 0s and 1s)
+@param Tb: Bit duration
+@return: A list containing the time array and the encoded signal array
+"""
+def Manchester(signal):
+    decoded_signal = np.zeros(len(signal)//2)
+
+    for i in range(len(decoded_signal)):
+        idx = i*2
+        val0 = signal[idx]
+        val1 = signal[idx+1]
+
+        if val0 == -1 and val1 == 1:
+            decoded_signal[i] = 0
+        else:
+            decoded_signal[i] = 1
+
+    return decoded_signal
