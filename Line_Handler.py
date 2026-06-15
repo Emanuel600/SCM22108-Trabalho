@@ -4,7 +4,7 @@ import random
 
 def Attenuate_And_Add_Noise(signal, SNR_db):
     a            = random.uniform(0, 1)
-    signal       = a*signal
+    signal       = a*np.array(signal).astype(float)
     signal_power = np.mean(signal**2)
     snr_lin      = 10 ** (SNR_db / 10)
     noise_power  = signal_power/snr_lin

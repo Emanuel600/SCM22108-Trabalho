@@ -40,3 +40,13 @@ def wav_to_uint8(wav_filepath):
     data = data.astype(np.uint8)
 
     return [fs, data]
+
+"""
+@brief: Convert a WAV file to binary data
+@param wav_filepath: The path to the WAV file
+@return: A tuple containing the sampling frequency and the binary data array
+"""
+def wav_to_binary(wav_filepath):
+    fs, uint8_data = wav_to_uint8(wav_filepath)
+    binary_data = uint8_to_binary(uint8_data)
+    return [fs, binary_data]
