@@ -5,6 +5,7 @@
 """
 
 import numpy as np
+import Jit as jit
 
 """
 @brief:      Decodes AMI signal
@@ -12,6 +13,7 @@ import numpy as np
 @param Tb:   Bit time
 @return:     A tuple containg time vector and decoded bit sequence
 """
+@jit.configure(parallel=True)
 def AMI(data, Tb=1):
     t = np.arange(0, len(data)*Tb, Tb)
     decoded_signal = np.zeros_like(t)
@@ -21,7 +23,7 @@ def AMI(data, Tb=1):
             decoded_signal[i] = 1
         else:
             decoded_signal[i] = 0
-    return [t, decoded_signal]
+    return t, decoded_signal
 
 
 """
@@ -30,6 +32,7 @@ def AMI(data, Tb=1):
 @param Tb:   Bit time
 @return:     A tuple containg time vector and decoded bit sequence
 """
+@jit.configure(parallel=True)
 def CMI(data, Tb=1):
     t = np.arange(0, (len(data)//2)*Tb, Tb)
     decoded_signal = np.zeros_like(t)
@@ -40,7 +43,7 @@ def CMI(data, Tb=1):
         bit   = hbit1==hbit2
         
         decoded_signal[i] = bit
-    return [t, decoded_signal]
+    return t, decoded_signal
 
 
 """
@@ -49,6 +52,7 @@ def CMI(data, Tb=1):
 @param Tb: Bit duration
 @return: A list containing the time array and the decoded signal array
 """
+@jit.configure(parallel=True)
 def Manchester(data, Tb=1):
     t = np.arange(0, (len(data)//2)*Tb, Tb)
     decoded_signal = np.zeros(len(data)//2)
@@ -63,4 +67,4 @@ def Manchester(data, Tb=1):
         else:
             decoded_signal[i] = 1
 
-    return [t, decoded_signal]
+    return t, decoded_signal

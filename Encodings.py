@@ -5,6 +5,7 @@
 """
 
 import numpy as np
+import Jit as jit
 
 """
 @brief: AMI encoding for a binary signal
@@ -12,6 +13,7 @@ import numpy as np
 @param fb: Bit frequency (inverse of bit duration)
 @return: A tuple containing the time array and the encoded signal array
 """
+@jit.configure(parallel=True)
 def AMI(signal, Tb=1):
     t = np.arange(0, len(signal)*Tb, Tb)
     encoded_signal = np.zeros_like(t)
@@ -22,7 +24,7 @@ def AMI(signal, Tb=1):
             encoded_signal[i] = polarity
         else:
             encoded_signal[i] = 0
-    return [t, encoded_signal]
+    return t, encoded_signal
 
 """
 @brief: CMI encoding for a binary signal
@@ -30,21 +32,23 @@ def AMI(signal, Tb=1):
 @param fb: Bit frequency (inverse of bit duration)
 @return: A tuple containing the time array and the encoded signal array
 """
+@jit.configure(parallel=True)
 def CMI(signal, Tb=1):
     t = np.arange(0, len(signal)*Tb, Tb/2)
     encoded_signal = np.zeros_like(t)
     polarity = -1
-    for i in 2*np.array(range(len(signal))):
-        if signal[i//2] == 1:
+    for i in range(len(signal)):
+        idx = 2 * i
+        if signal[i] == 1:
             polarity *= -1
-            encoded_signal[i] = polarity
-            encoded_signal[i+1] = polarity
+            encoded_signal[idx] = polarity
+            encoded_signal[idx+1] = polarity
         else:
             polarity *= -1
-            encoded_signal[i] = polarity
+            encoded_signal[idx] = polarity
             polarity *= -1
-            encoded_signal[i+1] = polarity
-    return [t, encoded_signal]
+            encoded_signal[idx+1] = polarity
+    return t, encoded_signal
 
 """
 @brief: Manchester encoding for a binary signal (IEEE 802.3 Standard)
@@ -52,6 +56,7 @@ def CMI(signal, Tb=1):
 @param Tb: Bit duration
 @return: A list containing the time array and the encoded signal array
 """
+@jit.configure(parallel=True)
 def Manchester(signal, Tb=1):
     t = np.arange(0, len(signal) * Tb, Tb / 2)
     encoded_signal = np.zeros_like(t)
@@ -67,4 +72,4 @@ def Manchester(signal, Tb=1):
             encoded_signal[idx] = 1
             encoded_signal[idx+1] = -1
 
-    return [t, encoded_signal]
+    return t, encoded_signal
